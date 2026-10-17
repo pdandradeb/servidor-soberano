@@ -119,6 +119,14 @@ else
   log_ok "OpenClaw já instalado ($(openclaw --version 2>/dev/null || echo 'ativo'))."
 fi
 
+# 6.1 Copiar Templates do Copiloto Soberano para o OpenClaw Workspace
+WORKSPACE_DIR="/home/${CURRENT_USER}/.openclaw/workspace"
+if [ -d "${WORKSPACE_DIR}" ] && [ ! -f "${WORKSPACE_DIR}/BOOTSTRAP.md" ]; then
+  log_info "Configurando templates de Copiloto Soberano no workspace do OpenClaw..."
+  cp -n "$(dirname "$0")/../templates/openclaw/"* "${WORKSPACE_DIR}/" 2>/dev/null || true
+fi
+
+
 # 8. Python uv & Typst (Opcionais de Alta Performance)
 log_info "7/7. Instalando ferramentas complementares (uv e typst)..."
 if ! command -v uv &>/dev/null; then
