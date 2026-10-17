@@ -1,6 +1,6 @@
 # 🏡 Servidor Doméstico Soberano — Guia Definitivo do Zero ao "Quit the Cloud"
 
-> Um guia prático, testado em batalha e de baixo custo para montar um servidor doméstico com **Raspberry Pi 5 + NVMe**, bloquear anúncios na casa inteira (**Pi-hole**), ter sua própria nuvem de arquivos e fotos sem pagar mensalidades (**Nextcloud**), e operar um **assistente pessoal autônomo com IA no WhatsApp** (**OpenClaw**).
+> Um guia prático, testado em batalha e de baixo custo para montar um servidor doméstico com **Raspberry Pi 5 + NVMe**, subir o seu **assistente de IA pessoal no WhatsApp** logo no início para ser seu copiloto, bloquear anúncios na casa inteira (**Pi-hole**) e ter sua própria nuvem de arquivos e fotos sem pagar mensalidades (**Nextcloud**).
 
 ---
 
@@ -18,24 +18,22 @@
 │                              Raspberry Pi 5 + SSD NVMe M.2                                   │
 │                                                                                              │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────┐   │
-│   │ 🛡️ REDE & SEGURANÇA                                                                  │   │
+│   │ 🤖 1. SEU COPILOTO DE IA (OpenClaw no WhatsApp)                                      │   │
+│   │ • Assistente autônomo rodando localmente, pronto para ajudar no resto da montagem    │   │
+│   │ • Responde por áudio e texto, executa scripts, lembra de tarefas e monitora o Pi     │   │
+│   └──────────────────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                              │
+│   ┌──────────────────────────────────────────────────────────────────────────────────────┐   │
+│   │ 🛡️ 2. REDE, SEGURANÇA & ACESSO REMOTO                                                │   │
 │   │ • Pi-hole v6 (DNS Server + Bloqueio de Anúncios e Telemetria em toda a casa)         │   │
-│   │ • Tailscale (VPN Mesh Privada: acesso remoto seguro de qualquer lugar sem abrir porta) │   │
+│   │ • Tailscale (VPN Mesh Privada: acesso remoto de qualquer lugar sem abrir portas)     │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                              │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────┐   │
-│   │ ☁️ ARMAZENAMENTO & QUIT THE CLOUD (HDD Externo USB 3.0)                               │   │
+│   │ ☁️ 3. ARMAZENAMENTO & QUIT THE CLOUD (HDD Externo USB 3.0)                               │   │
 │   │ • Nextcloud (Nuvem Soberana: Fotos, Documentos, Acervo pessoal e WebDAV)             │   │
-│   │ • Samba Server (Compartilhamento nativo com macOS Finder e Windows Explorer)         │   │
-│   │ • Rotina de Desduplicação e Unificação Fotográfica Canônica (Ano/Mês)                │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                              │
-│   ┌──────────────────────────────────────────────────────────────────────────────────────┐   │
-│   │ 🤖 IA PESSOAL & APLICAÇÕES DOCKER                                                    │   │
-│   │ • OpenClaw (Assistente pessoal autônomo conectado diretamente ao WhatsApp)           │   │
-│   │ • Vaultwarden (Cofre de senhas e cartões criptografado com suporte ao Bitwarden)     │   │
-│   │ • Rachadinha (Divisor de contas e despesas compartilhadas estilo Splitwise)          │   │
-│   │ • MiniDLNA (Servidor de mídia para streaming na Smart TV / Projetor)                 │   │
+│   │ • Unificação Fotográfica Canônica por Ano/Mês (sem duplicatas)                       │   │
+│   │ • Samba Server (Acesso nativo pelo Finder do Mac e Explorer do Windows)              │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -59,7 +57,7 @@ Para montar um servidor silencioso, de baixíssimo consumo elétrico (~5W a 12W)
 
 ---
 
-## 💾 2. Instalação do Sistema Operacional (Headless)
+## 💾 2. Instalação Headless do Sistema Operacional
 
 Você não precisa de monitor, teclado ou mouse conectados ao Raspberry Pi para configurá-lo:
 
@@ -73,65 +71,61 @@ Você não precisa de monitor, teclado ou mouse conectados ao Raspberry Pi para 
    * **Configurar Wi-Fi:** (se não for usar cabo de rede Gigabit).
 5. Grave o disco, insira no Raspberry Pi e ligue na tomada.
 
----
-
-## ⚡ 3. Primeiro Boot & Hardening do Sistema
-
-Acesse o servidor pelo terminal do seu computador:
-
+Acesse pelo terminal do seu computador:
 ```bash
 ssh raspd@raspd.local
-# (ou pelo IP atribuído pelo roteador, ex: ssh raspd@192.168.15.17)
-```
-
-### A. Atualização e Ferramentas Básicas:
-```bash
-sudo apt update && sudo apt full-upgrade -y
-sudo apt install -y curl wget git htop tmux ufw rsync
-```
-
-### B. Proteção de Memória (Swapfile no NVMe):
-Para evitar travamentos de falta de memória (OOM) sob carga pesada do Nextcloud ou Docker:
-```bash
-# Desativar swap padrão pequeno
-sudo dphys-swapfile swapoff || true
-sudo systemctl disable dphys-swapfile || true
-
-# Criar swapfile de 4GB rápido no NVMe
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-
-# Persistir no /etc/fstab
-echo '/swapfile none swap sw,pri=10 0 0' | sudo tee -a /etc/fstab
-```
-
-### C. Acesso Remoto Soberano com Tailscale (Sem abrir portas no roteador):
-O Tailscale cria uma rede VPN Mesh criptografada (WireGuard). Você acessa o seu servidor doméstico do trabalho, do 4G na rua ou em viagens sem precisar abrir portas nem configurar IP dinâmico:
-```bash
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo tailscale up --advertise-exit-node
 ```
 
 ---
 
-## 🛡️ 4. Bloqueador de Anúncios na Casa Inteira (Pi-hole v6)
+## 🚀 3. O Script Mestre: Bootstrap All-in-One (Instale Tudo de Uma Vez)
 
-O Pi-hole atua como o servidor DNS da sua casa, bloqueando propagandas, rastreadores e anúncios em todos os aparelhos (Smart TVs, celulares, notebooks) antes mesmo de serem carregados:
+Em vez de perder horas instalando dependência por dependência, disponibilizamos um instalador mestre completo neste repositório. Ele funciona como um *Brew bundle* / instalador completo que provisiona a máquina inteira com um único comando:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/pdandradeb/servidor-soberano/main/scripts/bootstrap.sh | bash
+```
+
+### 📦 O que o script instala e configura automaticamente:
+* **Ferramentas CLI essenciais:** `git`, `curl`, `wget`, `htop`, `tmux`, `ufw`, `rsync`, `jq`, `poppler-utils`, `build-essential`;
+* **Swapfile de 4 GB no NVMe:** Buffer de proteção contra travamentos de falta de memória (OOM);
+* **Tailscale (VPN Mesh):** Acesso remoto seguro de qualquer lugar sem abrir portas no roteador;
+* **Docker & Docker Compose:** Motor de contêineres oficial;
+* **Node.js 24 LTS & npm:** Runtime moderno para serviços e assistente;
+* **OpenClaw:** O motor do seu agente de IA pessoal.
+
+---
+
+## 🤖 4. Acorde seu Assistente de IA Pessoal no WhatsApp (OpenClaw)
+
+**A grande sacada:** ao colocar o assistente para funcionar logo no começo, **ele se torna seu copiloto técnico para o resto da montagem do servidor!**
+
+```bash
+openclaw onboard
+```
+
+1. Escolha o modelo de IA que preferir (Google Gemini 3.8 Flash, Anthropic Claude ou OpenAI);
+2. Conecte o canal do **WhatsApp** escaneando o QR code diretamente com a câmera do seu celular;
+3. Pronto! O assistente já está ativo no seu WhatsApp. Você pode mandar áudios, tirar dúvidas de terminal, pedir para ele verificar a temperatura do Raspberry Pi ou ajudar a montar os próximos passos!
+
+---
+
+## 🛡️ 5. Bloqueador de Anúncios na Casa Inteira (Pi-hole v6)
+
+O Pi-hole atua como o servidor DNS da sua casa, bloqueando anúncios, telemetrias e rastreadores em todos os aparelhos (Smart TVs, celulares, notebooks) antes mesmo de serem carregados:
 
 ```bash
 curl -sSL https://install.pi-hole.net | bash
 ```
 * Configure o IP estático do Raspberry Pi;
 * No seu roteador de internet (Vivo, Claro, etc.), mude o **DNS Primário** para o IP do seu Raspberry Pi (`192.168.15.17`). A partir desse instante, a rede inteira navega limpa.
-* Acesse o painel de controle pelo navegador: `http://raspd.local/admin`.
+* Acesse o painel pelo navegador: `http://raspd.local/admin`.
 
 ---
 
-## ☁️ 5. Fazendo o "Quit das Clouds" (Nuvem Própria com Nextcloud)
+## ☁️ 6. Fazendo o "Quit das Clouds" (Nuvem Própria com Nextcloud)
 
-Para substituir Google Drive, Dropbox e Google Fotos:
+Para substituir Google Drive, Dropbox e Google Fotos definitivamente:
 
 ```bash
 # 1. Instalar Nextcloud via Snap
@@ -149,7 +143,7 @@ sudo mkdir -p /mnt/toshiba
 sudo mount -a
 ```
 
-### Padrão de Organização Fotográfica Canônica:
+### 📸 Padrão de Organização Fotográfica Canônica:
 Para nunca mais perder fotos e se livrar de duplicatas espalhadas:
 * Estruture as fotos obrigatoriamente por **Ano e Mês** com base na data EXIF real da foto:  
   `Fotos/Anuais/AAAA/MM/` (ex: `Fotos/Anuais/2026/04/`).
@@ -157,44 +151,24 @@ Para nunca mais perder fotos e se livrar de duplicatas espalhadas:
 
 ---
 
-## 🤖 6. Seu Próprio Assistente de IA Pessoal no WhatsApp (OpenClaw)
-
-O **OpenClaw** é o motor que transforma o seu servidor num assistente pessoal autônomo conectado diretamente ao seu WhatsApp:
-
-1. **Instale o Node.js 24 LTS e o OpenClaw:**
-   ```bash
-   curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
-   sudo apt install -y nodejs
-   sudo npm install -g openclaw@latest
-   ```
-
-2. **Inicie o setup guiado:**
-   ```bash
-   openclaw onboard
-   ```
-   * Escolha o provedor de IA (Google Gemini 3.8 Flash, Anthropic Claude ou OpenAI);
-   * Conecte o canal do WhatsApp escaneando o QR code pelo app no celular;
-   * O assistente ganha vida e passa a responder comandos de voz, textos, gerenciar arquivos no servidor e enviar lembretes!
-
----
-
-## 🐳 7. Suíte de Micro-Serviços Úteis (Docker Compose)
-
-Todas as nossas aplicações do dia a dia rodam isoladas em contêineres leves:
-
-* **⚖️ Rachadinha (`porta 3008`):** Divisor de contas estilo Splitwise para casais e repúblicas, com suporte a multi-moedas e comando por voz no WhatsApp.
-* **🔐 Vaultwarden (`porta 3009`):** Servidor Bitwarden em Rust consumindo meros 25MB de RAM com criptografia ponta a ponta e app no celular.
-* **🥐 Mon Carnet Français (`porta 3010`):** Caderno de imersão linguística para vocabulário de telas e expressões diárias.
-* **🏃‍♂️ Ritmo & Sono (`porta 3012`):** Visualizador descomplicado de treinos físicos e qualidade do sono.
-
----
-
-## 🔄 8. Estratégia de Redundância e Backup 3-2-1
+## 🔄 7. Estratégia de Redundância e Backup 3-2-1
 
 Servidor soberano não pode ter ponto único de falha:
-1. **Snapshots Locais Diários:** Todo dia às 03:30, um script compacta bancos de dados e segredos para o HD externo;
+1. **Snapshots Locais Diários:** O script `scripts/backup-services-local.sh` roda diariamente às 03:30 compactando bancos de dados e configurações para o HD externo;
 2. **Cold Storage em HDs Externos Portáteis:** Espelhamento periódico via `rsync` para 2 ou 3 HDs externos formatados em APFS ou ext4;
-3. **Plano de Desastre:** Com o guia `docs/disaster-recovery.md`, uma máquina inteira do zero é restabelecida em menos de 30 minutos.
+3. **Plano de Desastre:** Com o guia [`docs/disaster-recovery.md`](docs/disaster-recovery.md), uma máquina inteira do zero é restabelecida em menos de 30 minutos.
+
+---
+
+## 📁 Scripts Inclusos neste Repositório
+
+Todos os scripts operacionais estão na pasta [`scripts/`](scripts/):
+* [`bootstrap.sh`](scripts/bootstrap.sh) — Instalador master all-in-one de todos os softwares;
+* [`setup-system-tuning.sh`](scripts/setup-system-tuning.sh) — Ajuste de swap no NVMe e modo headless;
+* [`setup-openclaw.sh`](scripts/setup-openclaw.sh) — Provisionamento automatizado do assistente;
+* [`backup-remote.sh`](scripts/backup-remote.sh) — Backup completo do Pi para máquina remota;
+* [`backup-services-local.sh`](scripts/backup-services-local.sh) — Snapshot diário local dos serviços para o HDD externo;
+* [`nextcloud-daily-scan.sh`](scripts/nextcloud-daily-scan.sh) — Varredura e indexação periódica de arquivos.
 
 ---
 
