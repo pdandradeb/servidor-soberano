@@ -57,24 +57,35 @@ Para montar um servidor silencioso, de baixíssimo consumo elétrico (~5W a 12W)
 
 ---
 
-## 💾 2. Instalação Headless do Sistema Operacional
+## 💾 2. Instalação Headless do Sistema Operacional (Windows, Mac ou Linux)
 
-Você não precisa de monitor, teclado ou mouse conectados ao Raspberry Pi para configurá-lo:
+Você não precisa de monitor, teclado ou mouse conectados ao Raspberry Pi para configurá-lo. Todo o processo pode ser feito diretamente do seu computador de uso diário.
 
-1. Baixe o [Raspberry Pi Imager](https://www.raspberrypi.com/software/);
-2. Conecte o SSD NVMe (ou cartão de setup inicial) no seu computador;
-3. Escolha o SO: **Raspberry Pi OS (64-bit) Lite** (sem interface gráfica pesada);
-4. Clique na engrenagem ⚙️ (Configurações Avançadas) e preencha:
-   * **Hostname:** `raspd`
-   * **Usuário e Senha:** escolha suas credenciais;
-   * **Ativar SSH:** Autenticação por chave pública (ou senha);
-   * **Configurar Wi-Fi:** (se não for usar cabo de rede Gigabit).
-5. Grave o disco, insira no Raspberry Pi e ligue na tomada.
+> 🪟 **Usa Windows 10 ou 11?** Veja o nosso [**Guia Completo para Windows e WSL2**](docs/setup-windows-e-wsl.md) com comandos prontos para PowerShell, atalhos do Windows Terminal e dicas de rede.
 
-Acesse pelo terminal do seu computador:
+### 2.1 Gravando o disco pelo Windows ou Mac
+1. Baixe o **Raspberry Pi Imager** ([site oficial](https://www.raspberrypi.com/software/) ou no Windows via terminal: `winget install RaspberryPi.RaspberryPiImager`);
+2. Conecte o SSD NVMe (via case USB-C) ou o cartão de memória no seu PC;
+3. No Imager, selecione:
+   * **Dispositivo:** Raspberry Pi 5 (ou Pi 4);
+   * **Sistema Operacional:** **Raspberry Pi OS (64-bit) Lite** (sem interface gráfica para máxima estabilidade e performance);
+   * **Armazenamento:** Escolha o disco conectado.
+4. Clique em **Próximo** e selecione **Editar Configurações** (ou pressione `Ctrl + Shift + X`):
+   * **Hostname:** `raspd` (ou o nome que preferir para a sua máquina);
+   * **Usuário e Senha:** crie seu usuário (ex: `raspd`) e senha mestra;
+   * **Ativar SSH:** Marque para permitir login por senha (ou adicione sua chave SSH pública);
+   * **Configurar Wi-Fi:** preencha nome da rede e senha (se não for usar cabo de rede conectado ao roteador).
+5. Clique em **Gravar**, insira o disco gravado no Raspberry Pi e ligue na tomada.
+
+### 2.2 Conectando via SSH
+Aguarde cerca de 60 segundos após ligar o Pi para o boot completar. Abra o terminal do seu computador (**PowerShell** ou **Windows Terminal** no Windows, ou **Terminal** no Mac/Linux):
+
 ```bash
 ssh raspd@raspd.local
 ```
+*(Digite a senha cadastrada no Imager e pronto: você já está dentro do seu servidor).*
+
+> 💡 **Não tem Raspberry Pi físico agora?** Você pode rodar todo este ecossistema soberano em um ambiente de testes diretamente no seu Windows através do **WSL2 (Windows Subsystem for Linux)**. Consulte a [Seção 4 do Guia Windows e WSL2](docs/setup-windows-e-wsl.md#parte-4-alternativa--rodando-no-wsl2-sem-raspberry-pi-físico).
 
 ---
 
@@ -96,9 +107,11 @@ curl -fsSL https://raw.githubusercontent.com/pdandradeb/servidor-soberano/main/s
 
 ---
 
-## 🤖 4. Acorde seu Assistente de IA Pessoal no WhatsApp (OpenClaw)
+## 🤖 4. O Segredo: "OpenClaw First" (Seu Copiloto no WhatsApp nos Primeiros 5 Minutos)
 
-**A grande sacada:** ao colocar o assistente para funcionar logo no começo, **ele se torna seu copiloto técnico para o resto da montagem do servidor!**
+**A grande sacada estratégica deste setup:** em vez de deixar a inteligência artificial por último, **nós subimos o assistente nos primeiros 5 minutos!**
+
+Ao escanear o QR Code no WhatsApp logo no início, **o assistente passa a ser o seu copiloto técnico pessoal** para todo o restante da jornada. A partir daí, você não precisa ficar decorando comandos de terminal: você pode mandar áudio no WhatsApp perguntando *"como monto o HD externo?"*, pedir para ele verificar a temperatura do Pi, formatar discos ou automatizar serviços para você!
 
 ```bash
 openclaw onboard
@@ -142,6 +155,19 @@ sudo mkdir -p /mnt/toshiba
 # Adicione a linha correspondente ao UUID no /etc/fstab e monte:
 sudo mount -a
 ```
+
+### 💾 6.1 Conectando HDs Externos para Backup & Acervo de Massa
+Se você for conectar HDs externos USB (2TB, 4TB ou mais) para ser o grande cofre da casa:
+
+1. **Alimentação Elétrica Crítica:**
+   * No **Raspberry Pi 5**, use obrigatoriamente a **fonte oficial de 27W USB-PD** (ela entrega 5A para aguentar o pico de partida dos discos mecânicos sem sofrer *undervoltage*).
+   * No **Raspberry Pi 4** ou ao ligar mais de 1 disco USB, use um **Hub USB 3.0 energizado com tomada própria**.
+2. **Montagem Persistente com Proteção (`/etc/fstab`):**
+   * Descubra o UUID da partição com `sudo blkid`.
+   * Configure no `/etc/fstab` usando a flag `nofail` (ex: `UUID=... /mnt/dados ext4 defaults,nofail 0 2`). Com o `nofail`, mesmo se alguém chutar o cabo do HD na tomada, o Raspberry Pi liga normalmente sem travar o boot.
+3. **Compartilhamento no Windows Explorer (Samba):**
+   * Com o serviço Samba ativo, o HD externo aparece nativamente na rede do Windows: basta digitar `\\raspd.local\dados` no Explorer ou mapear como unidade `Z:` para arrastar arquivos direto do seu PC!
+   *(Veja o passo a passo completo no [Guia de HDs e Armazenamento](docs/setup-windows-e-wsl.md#parte-3-conectando-hds-externos-para-backup--acervo)).*
 
 ### 📸 Padrão de Organização Fotográfica Canônica:
 Para nunca mais perder fotos e se livrar de duplicatas espalhadas:
