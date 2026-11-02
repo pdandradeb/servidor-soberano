@@ -54,6 +54,9 @@ Para montar um servidor silencioso, de baixíssimo consumo elétrico (~5W a 12W)
 | **Gabinete** | **Argon NEO 5 M.2 NVMe** ou **Argon ONE V3** | Gabinete de alumínio com dissipação passiva integrada e slot para o SSD. |
 | **Armazenamento Massa** | **HD Externo 2.5" USB 3.0 (2TB a 4TB)** | Para acervo de fotos, vídeos, filmes e documentos (ex: Toshiba Canvio / Seagate). |
 | **Proteção Elétrica** | **Filtro de Linha DPS (iClamper Energia 5)** | Protege a fonte e o filesystem contra picos de tensão e oscilações da rede. |
+| **Cartão MicroSD** | **SanDisk Extreme 64GB/128GB** | Para gravação inicial do SO pelo Imager e recuperação do sistema. |
+
+> 🔗 **Onde Comprar Cada Componente:** Veja links diretos testados (The Pi Hut, MakerHero, AliExpress, Amazon, Mercado Livre) no [**Guia Completo de Hardware Soberano (docs/hardware-soberano.md)**](docs/hardware-soberano.md).
 
 ---
 
