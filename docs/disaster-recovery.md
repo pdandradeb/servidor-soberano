@@ -25,7 +25,7 @@ Antes de restaurar serviços pesados, configure a proteção de memória e conte
 ```
 
 O script aplica automaticamente:
-- **Swapfile de 4 GB no NVMe** (prioridade 10) como buffer de transbordamento para o `zram` (prioridade 100).
+- **Swapfile de 16 GB no NVMe** (prioridade 10) como buffer de transbordamento para o `zram` (prioridade 100).
 - **Relaxamento do Watchdog do Systemd para 5 minutos** (`RuntimeWatchdogSec=5m`).
 - **Modo Headless puro** (`multi-user.target`, desativando LightDM e economizando ~200 MB de RAM).
 - **Journald com armazenamento persistente** em `/var/log/journal`.
@@ -84,7 +84,7 @@ sudo mount -a
 4. Conectar o bind mount do Acervo do Toshiba:
    ```bash
    # /etc/fstab:
-   # /mnt/toshiba/cloud /mnt/toshiba/nextcloud-data/raspd/files none bind 0 0
+   # /mnt/toshiba/cloud /mnt/toshiba/nextcloud-data/raspd/files none bind,x-systemd.requires=/mnt/toshiba 0 0
    sudo mount -a
    ```
 5. **Segurança de Usuários**: O cadastro público de novos usuários é mantido **desativado** por padrão (somente administradores podem criar contas).

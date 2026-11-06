@@ -63,18 +63,18 @@ PACKAGES=(
 $SUDO apt-get install -y "${PACKAGES[@]}"
 log_ok "Pacote base de ferramentas instalado com sucesso!"
 
-# 4. Swap de 4GB no NVMe & Tuning de Sistema (Proteção contra OOM)
-log_info "3/7. Configurando Swapfile de 4 GB no NVMe e tuning do sistema..."
+# 4. Swap de 16GB no NVMe & Tuning de Sistema (Proteção contra OOM)
+log_info "3/7. Configurando Swapfile de 16 GB no NVMe e tuning do sistema..."
 if ! grep -q '/swapfile' /etc/fstab 2>/dev/null; then
-  log_info "Criando swapfile de 4GB rápido no NVMe..."
+  log_info "Criando swapfile de 16GB rápido no NVMe..."
   $SUDO dphys-swapfile swapoff 2>/dev/null || true
   $SUDO systemctl disable dphys-swapfile 2>/dev/null || true
-  $SUDO fallocate -l 4G /swapfile 2>/dev/null || $SUDO dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
-  $SUDO chmod 600 /swapfile
-  $SUDO mkswap /swapfile
-  $SUDO swapon /swapfile
-  echo '/swapfile none swap sw,pri=10 0 0' | $SUDO tee -a /etc/fstab
-  log_ok "Swapfile de 4GB ativado e persistido no fstab!"
+  $SUDO fallocate -l 16G /swapfile16 2>/dev/null || $SUDO dd if=/dev/zero of=/swapfile16 bs=1M count=16384 status=progress
+  $SUDO chmod 600 /swapfile16
+  $SUDO mkswap /swapfile16
+  $SUDO swapon -p 10 /swapfile16
+  echo '/swapfile16 none swap sw,pri=10 0 0' | $SUDO tee -a /etc/fstab
+  log_ok "Swapfile de 16GB ativado e persistido no fstab!"
 else
   log_ok "Swapfile já configurado no sistema."
 fi
@@ -112,8 +112,8 @@ if ! command -v node &>/dev/null || [ "$(node -v | cut -d'.' -f1)" != "v24" ]; t
 fi
 
 if ! command -v openclaw &>/dev/null; then
-  log_info "Instalando OpenClaw globalmente..."
-  $SUDO npm install -g openclaw@latest
+  log_info "Instalando OpenClaw via instalador oficial (prefixo de usuário sem sudo)..."
+  curl -fsSL https://openclaw.ai/install.sh | bash
   log_ok "OpenClaw instalado com sucesso!"
 else
   log_ok "OpenClaw já instalado ($(openclaw --version 2>/dev/null || echo 'ativo'))."
@@ -140,7 +140,7 @@ echo -e "${GREEN}
 ${NC}
 Todos os softwares fundamentais estão instalados:
   ✔ Pacotes base (git, tmux, htop, rsync, ufw, poppler)
-  ✔ Swap de 4 GB no NVMe (estabilidade absoluta)
+  ✔ Swap de 16 GB no NVMe (estabilidade absoluta)
   ✔ Tailscale (acesso remoto seguro de qualquer lugar)
   ✔ Docker & Docker Compose
   ✔ Node.js 24 LTS

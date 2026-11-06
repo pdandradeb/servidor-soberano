@@ -16,24 +16,27 @@ echo "======================================================"
 ssh -o BatchMode=yes "$TARGET_HOST" bash << 'REMOTE_SCRIPT'
 set -euo pipefail
 
-echo "▶ 1. Configurando Swapfile de 4 GB no SSD NVMe (Buffer de Transbordamento)..."
-if [[ ! -f /swapfile ]]; then
-  echo "  - Alocando 4 GB em /swapfile..."
-  sudo fallocate -l 4G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
-  sudo chmod 600 /swapfile
-  sudo mkswap /swapfile
+echo "▶ 1. Configurando Swapfile de 16 GB no SSD NVMe (Buffer de Transbordamento)..."
+if [[ ! -f /swapfile16 ]] && [[ ! -f /swapfile ]]; then
+  echo "  - Alocando 16 GB em /swapfile16..."
+  sudo fallocate -l 16G /swapfile16 || sudo dd if=/dev/zero of=/swapfile16 bs=1M count=16384
+  sudo chmod 600 /swapfile16
+  sudo mkswap /swapfile16
 fi
 
+TARGET_SWAP="/swapfile16"
+[[ -f /swapfile ]] && TARGET_SWAP="/swapfile"
+
 # Ativa swapfile com prioridade menor que a do zram (pri=10) se ainda não estiver ativo
-if ! swapon --show | grep -q "/swapfile"; then
-  echo "  - Ativando /swapfile com prioridade 10..."
-  sudo swapon -p 10 /swapfile
+if ! swapon --show | grep -q "$TARGET_SWAP"; then
+  echo "  - Ativando $TARGET_SWAP com prioridade 10..."
+  sudo swapon -p 10 "$TARGET_SWAP"
 fi
 
 # Persistência no /etc/fstab
-if ! grep -q "/swapfile" /etc/fstab; then
-  echo "  - Registrando /swapfile no /etc/fstab..."
-  echo '/swapfile none swap sw,pri=10 0 0' | sudo tee -a /etc/fstab
+if ! grep -q "$TARGET_SWAP" /etc/fstab; then
+  echo "  - Registrando $TARGET_SWAP no /etc/fstab..."
+  echo "$TARGET_SWAP none swap sw,pri=10 0 0" | sudo tee -a /etc/fstab
 fi
 echo "  ✓ Swap configurado:"
 swapon --show

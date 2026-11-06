@@ -102,7 +102,7 @@ curl -fsSL https://raw.githubusercontent.com/pdandradeb/servidor-soberano/main/s
 
 ### 📦 O que o script instala e configura automaticamente:
 * **Ferramentas CLI essenciais:** `git`, `curl`, `wget`, `htop`, `tmux`, `ufw`, `rsync`, `jq`, `poppler-utils`, `build-essential`;
-* **Swapfile de 4 GB no NVMe:** Buffer de proteção contra travamentos de falta de memória (OOM);
+* **Swapfile de 16 GB no NVMe:** Buffer de proteção contra travamentos de falta de memória (OOM) mesmo sob cargas pesadas de Docker e indexação;
 * **Tailscale (VPN Mesh):** Acesso remoto seguro de qualquer lugar sem abrir portas no roteador;
 * **Docker & Docker Compose:** Motor de contêineres oficial;
 * **Node.js 24 LTS & npm:** Runtime moderno para serviços e assistente;

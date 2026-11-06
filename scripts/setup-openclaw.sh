@@ -24,12 +24,12 @@ if ! command -v node >/dev/null 2>&1 || [[ "$(node -v | cut -d. -f1 | tr -d 'v')
 fi
 echo "  ✓ Node.js $(node -v) e npm $(npm -v) prontos."
 
-echo "▶ 2. Verificando instalação global do OpenClaw..."
+echo "▶ 2. Verificando instalação do OpenClaw..."
 if ! command -v openclaw >/dev/null 2>&1; then
-  echo "  - Instalando OpenClaw via npm global..."
-  sudo npm install -g openclaw
+  echo "  - Instalando OpenClaw via instalador oficial (prefixo de usuário)..."
+  curl -fsSL https://openclaw.ai/install.sh | bash
 fi
-echo "  ✓ OpenClaw $(openclaw --version) instalado."
+echo "  ✓ OpenClaw $(openclaw --version 2>/dev/null || echo 'instalado')."
 
 echo "▶ 3. Configurando chave SSH dedicada para o GitHub..."
 mkdir -p ~/.ssh
