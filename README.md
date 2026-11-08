@@ -120,9 +120,26 @@ Ao escanear o QR Code no WhatsApp logo no início, **o assistente passa a ser o 
 openclaw onboard
 ```
 
-1. Escolha o modelo de IA que preferir (Google Gemini 3.8 Flash, Anthropic Claude ou OpenAI);
+1. Escolha o modelo de IA que preferir (veja as opções gratuitas e recomendadas abaixo);
 2. Conecte o canal do **WhatsApp** escaneando o QR code diretamente com a câmera do seu celular;
 3. Pronto! O assistente já está ativo no seu WhatsApp. Você pode mandar áudios, tirar dúvidas de terminal, pedir para ele verificar a temperatura do Raspberry Pi ou ajudar a montar os próximos passos!
+
+### 🧠 Escolhendo o Modelo de Inferência (O "Cérebro" do Assistente)
+
+O hardware do Raspberry Pi cuida da infraestrutura e dos dados locais soberanos, mas o raciocínio das mensagens e o uso de ferramentas rodam via API de modelos de linguagem. O OpenClaw é agnóstico a provedores:
+
+* **Google AI Studio (Gemini 2.5 / 3.8 Flash) — *Recomendado para o Dia a Dia*:**
+  * **Custo:** Tier gratuito muito generoso no AI Studio (`aistudio.google.com`). No modo pago (pay-as-you-go), custa frações de centavos por dia.
+  * **Vantagens:** Janela de contexto massiva (1M+ tokens), processa fotos (prints, notas fiscais, fotos da geladeira), transcreve áudios do WhatsApp nativamente e responde voando.
+* **OpenRouter — *O canivete suíço (com opções 100% gratuitas)*:**
+  * **Custo:** Modelos com a tag `:free` são 0800 (ex: `meta-llama/llama-3.3-70b-instruct:free`, `deepseek/deepseek-r1:free`, `qwen/qwen-2.5-72b-instruct:free`). Para modelos pagos, você carrega R$ 25 a R$ 50 ($5 a $10) via Pix/cartão e roda por meses sem assinatura fixa.
+  * **Vantagens:** Uma única chave de API (`openrouter.ai`) dá acesso a centenas de modelos abertos e proprietários. Excelente para alternar de modelo com um único comando.
+* **Groq & Cerebras — *Velocidade Extrema (Gratuito)*:**
+  * Oferecem planos gratuitos para rodar modelos open-weights (Llama 3.3 70B) com latência praticamente zero.
+* **Anthropic (Claude 3.5 / 3.7 Sonnet) — *Raciocínio Profundo & Código*:**
+  * Referência mundial para programar, refatorar código e seguir instruções complexas. Pago por token consumido.
+* **E modelos 100% locais (Ollama)?**
+  * É possível rodar modelos no próprio Pi ou em outro computador na rede local via Ollama. Porém, no Raspberry Pi (sem GPU dedicada), modelos com inteligência suficiente para usar ferramentas e web search rodam lentos. Para uma experiência rápida e fluida no WhatsApp, usar provedores em nuvem (mesmo os 100% gratuitos via OpenRouter ou AI Studio) é muito superior.
 
 ---
 
