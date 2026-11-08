@@ -88,6 +88,18 @@ ssh raspd@raspd.local
 ```
 *(Digite a senha cadastrada no Imager e pronto: você já está dentro do seu servidor).*
 
+### 2.3 Montando o Kit para um Amigo? Pré-configure o Wi-Fi da Casa Dele!
+Se você estiver configurando o Raspberry Pi na sua casa para entregar pronto para outra pessoa, o Raspberry Pi OS (Bookworm / NetworkManager) permite salvar **múltiplas redes Wi-Fi** simultaneamente:
+
+1. Enquanto o Pi estiver ligado na sua casa (conectado no seu Wi-Fi ou cabo de rede), adicione a rede da casa do seu amigo:
+   ```bash
+   sudo nmcli connection add type wifi con-name "WiFi-Casa-Amigo" ifname wlan0 ssid "NOME_DA_REDE"
+   sudo nmcli connection modify "WiFi-Casa-Amigo" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "SENHA_DO_WIFI"
+   sudo nmcli connection modify "WiFi-Casa-Amigo" connection.autoconnect yes
+   ```
+2. **Magia do Plug-and-Play:** Quando o amigo levar o aparelhinho para casa e ligar na tomada, o Pi não vai achar o seu Wi-Fi, vai escanear o ambiente, conectar automaticamente no Wi-Fi dele e ficar 100% online — sem ele precisar de monitor, teclado ou cabo de rede!
+3. **Acesso Remoto Imediato:** Como o **Tailscale** já foi provisionado no passo a seguir, você ou seu amigo conseguem acessar o Pi de qualquer lugar pelo IP do Tailscale, mesmo sem saber qual IP o roteador da casa dele entregou.
+
 > 💡 **Não tem Raspberry Pi físico agora?** Você pode rodar todo este ecossistema soberano em um ambiente de testes diretamente no seu Windows através do **WSL2 (Windows Subsystem for Linux)**. Consulte a [Seção 4 do Guia Windows e WSL2](docs/setup-windows-e-wsl.md#parte-4-alternativa--rodando-no-wsl2-sem-raspberry-pi-físico).
 
 ---
