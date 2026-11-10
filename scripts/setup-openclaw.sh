@@ -66,12 +66,12 @@ echo "▶ 5. Criando diretório de backup persistente no HDD de 3.6TB..."
 sudo mkdir -p /mnt/toshiba/backups/openclaw
 sudo chown -R $(id -u):$(id -g) /mnt/toshiba/backups/openclaw
 
-echo "▶ 6. Garantindo limite de memória no serviço systemd do OpenClaw (768 MB)..."
+echo "▶ 6. Garantindo limite de memória no serviço systemd do OpenClaw (2048 MB)..."
 OPENCLAW_SERVICE="$HOME/.config/systemd/user/openclaw-gateway.service"
 if [[ -f "$OPENCLAW_SERVICE" ]]; then
-  sed -i -E 's/--max-old-space-size=[0-9]+/--max-old-space-size=768/g' "$OPENCLAW_SERVICE"
+  sed -i -E 's/--max-old-space-size=[0-9]+/--max-old-space-size=2048/g' "$OPENCLAW_SERVICE"
   systemctl --user daemon-reload
-  echo "  ✓ openclaw-gateway.service ajustado para max-old-space-size=768."
+  echo "  ✓ openclaw-gateway.service ajustado para max-old-space-size=2048 (apoiado por swap NVMe e zram)."
 fi
 
 echo ""

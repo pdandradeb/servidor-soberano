@@ -194,6 +194,11 @@ Restabelecer os agendamentos no `crontab -e` do usuário `raspd`:
    sudo tar -xzf /mnt/toshiba/backups/<TIMESTAMP>/openclaw-backup-*.tar.gz -C /
    systemctl --user restart openclaw-gateway
    ```
-3. Automações Ativas do Gateway:
+3. Calibração de Memória e Sessões do Gateway:
+   - **V8 Heap**: `--max-old-space-size=2048` no systemd service.
+   - **Auto-compactação**: `maxActiveTranscriptBytes: "25mb"` e `keepRecentTokens: 80000` (margem de segurança antes do degrau de 128k do Google).
+   - **Ciclo de Sessão**: Reset por inatividade em 120 min (`idleMinutes: 120`) e rollover diário às 04h (`mode: "daily", atHour: 4`).
+   - **Heartbeat**: Isolado em sessão descartável (`isolatedSession: true`, `lightContext: true`).
+4. Automações Ativas do Gateway:
    - `lembrete-remedio-21h`: Diariamente às 21:00.
    - `lembrete-enel-dia-25`: Todo dia 25 às 12:00 no grupo WhatsApp *filminhos-e-coisinhas*.
