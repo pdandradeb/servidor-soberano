@@ -40,6 +40,53 @@
 
 ---
 
+## 📋 0. Pré-Setup: O Checklist Para Adiantar Enquanto o Hardware Não Chega
+
+Se você vai montar o servidor para você mesmo ou ajudar um amigo, **não precisa esperar o Raspberry Pi chegar na tomada para começar**. Mande este checklist para a pessoa adiantar pelo celular ou notebook:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                  CHECKLIST DE PRÉ-SETUP (15 MINUTOS NO SOFÁ)                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│  [ ] 1. Criar conta no GitHub (https://github.com)                           │
+│  [ ] 2. Criar conta no Tailscale (https://tailscale.com) e baixar o app      │
+│  [ ] 3. Escolher o canal do bot (WhatsApp precisa de chip; Telegram não!)    │
+│  [ ] 4. Gerar a chave de IA (Google AI Studio gratuito ou sua conta paga)    │
+│  [ ] 5. Separar uma tomada e um cabo de rede perto do roteador de internet   │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 1. Criar conta no GitHub ([github.com](https://github.com))
+* Gratuita e imediata.
+* Servirá para clonar este repositório, salvar backups automáticos das configurações, versionar o cofre de notas e sincronizar scripts.
+
+### 2. Criar conta no Tailscale ([tailscale.com](https://tailscale.com))
+* O Tailscale é a VPN mesh segura que permite acessar o servidor de qualquer lugar do mundo (no 4G/5G, no trabalho ou em viagens) furando bloqueios de operadoras (CGNAT) sem abrir portas no roteador da casa.
+* **O que fazer:** Fazer login com a mesma conta do Google ou GitHub e instalar o aplicativo no celular e no notebook. Quando o Raspberry Pi subir, ele entrará nessa mesma rede privada com um único clique.
+
+### 3. Escolher o Canal do Assistente: Precisa de Chip de Celular?
+Uma dúvida clássica de quem está começando: *"Preciso comprar um chip novo para o meu assistente?"*
+
+| Canal | Precisa de Chip / Número Novo? | Como Funciona o Pareamento | Custo / Prós e Contras |
+|---|---|---|---|
+| **WhatsApp** | **SIM** (Altamente Recomendado) | Escaneia o QR Code no terminal como se fosse um WhatsApp Web. | **Prós:** Fica no app onde você e sua família passam o dia, suporta áudios nativos e grupos.<br>**Contras:** Precisa de um número ativo para receber o SMS inicial de validação. |
+| **Telegram** | **NÃO** (Custo Zero Imediato) | Fala com o `@BotFather`, cria o bot e pega o token de API em 30 segundos. | **Prós:** Não gasta um centavo com chip, configuração instantânea e suporte completo a áudio, fotos e arquivos.<br>**Contras:** Exige que você use o app do Telegram. |
+| **Discord** | **NÃO** | Cria uma aplicação no Discord Developer Portal e pega o bot token. | **Prós:** Excelente para quem já usa Discord no dia a dia, com canais temáticos.<br>**Contras:** Menos prático para mandar áudios curtos do dia a dia na rua. |
+| **Interface Web / Terminal** | **NÃO** | O OpenClaw já inclui interface web moderna (*Control UI*) acessível localmente ou via Tailscale. | **Prós:** Acesso direto pelo navegador sem depender de nenhuma empresa de mensageria. |
+
+> 📱 **Dica Prática para WhatsApp:** O WhatsApp ainda exige validação por SMS na ativação de qualquer conta (mesmo com os novos testes de *usernames* da Meta). Se o seu amigo quiser o assistente no WhatsApp, oriente-o a **comprar um chip pré-pago avulso de R$ 10 a R$ 15** (Claro, Vivo ou TIM) e colocar uma recarga mínima. Ele espeta o chip num celular antigo por 5 minutos só para receber o SMS de confirmação, escaneia o QR Code do assistente e depois pode até guardar o chip na gaveta.
+
+### 4. Gerar a Chave de IA (O Cérebro de Inferência)
+O assistente precisa de uma chave de API para processar áudios, textos e ferramentas.
+* **Quem quer custo zero:** Gerar uma chave gratuita no **Google AI Studio** (`aistudio.google.com`) — veja o passo a passo na Seção 4.
+* **Quem já paga ChatGPT Plus ou Claude Pro:** Veja o guia na Seção 4.1 para entender como usar sua conta ou gerar créditos de API.
+
+### 5. O Pouso Físico do Servidor
+* Separar um cantinho arejado perto do roteador de internet da casa.
+* Deixar separado: cabo de rede Ethernet (RJ-45) para estabilidade máxima e uma tomada livre.
+
+---
+
 ## 🛒 1. Lista de Materiais & Hardware Recomendado
 
 Para montar um servidor silencioso, de baixíssimo consumo elétrico (~5W a 12W) e com durabilidade de anos, **evite cartões microSD para o sistema operacional**. O uso de SSD NVMe é o segredo da estabilidade:
@@ -122,36 +169,93 @@ curl -fsSL https://raw.githubusercontent.com/pdandradeb/servidor-soberano/main/s
 
 ---
 
-## 🤖 4. O Segredo: "OpenClaw First" (Seu Copiloto no WhatsApp nos Primeiros 5 Minutos)
+## 🤖 4. O Segredo: "OpenClaw First" (Seu Copiloto nos Primeiros 5 Minutos)
 
 **A grande sacada estratégica deste setup:** em vez de deixar a inteligência artificial por último, **nós subimos o assistente nos primeiros 5 minutos!**
 
-Ao escanear o QR Code no WhatsApp logo no início, **o assistente passa a ser o seu copiloto técnico pessoal** para todo o restante da jornada. A partir daí, você não precisa ficar decorando comandos de terminal: você pode mandar áudio no WhatsApp perguntando *"como monto o HD externo?"*, pedir para ele verificar a temperatura do Pi, formatar discos ou automatizar serviços para você!
+Ao parear o assistente no seu aplicativo de mensagens favorito logo no início, **ele se torna o seu copiloto técnico pessoal** para o restante de toda a montagem. Você não precisa ficar decorando comandos de terminal: basta mandar um áudio ou texto perguntando *"como monto o HD externo?"*, pedir para ele verificar a temperatura do processador, formatar discos ou automatizar backups para você!
 
 ```bash
 openclaw onboard
 ```
 
-1. Escolha o modelo de IA que preferir (veja as opções gratuitas e recomendadas abaixo);
-2. Conecte o canal do **WhatsApp** escaneando o QR code diretamente com a câmera do seu celular;
-3. Pronto! O assistente já está ativo no seu WhatsApp. Você pode mandar áudios, tirar dúvidas de terminal, pedir para ele verificar a temperatura do Raspberry Pi ou ajudar a montar os próximos passos!
+---
 
-### 🧠 Escolhendo o Modelo de Inferência (O "Cérebro" do Assistente)
+### 📲 4.1 Escolhendo o Canal de Mensagens: WhatsApp, Telegram ou Discord?
 
-O hardware do Raspberry Pi cuida da infraestrutura e dos dados locais soberanos, mas o raciocínio das mensagens e o uso de ferramentas rodam via API de modelos de linguagem. O OpenClaw é agnóstico a provedores:
+O OpenClaw é multiplataforma e suporta diversos canais de mensageria simultâneos. Veja qual faz mais sentido para você ou para o seu amigo:
 
-* **Google AI Studio (Gemini 2.5 / 3.8 Flash) — *Recomendado para o Dia a Dia*:**
-  * **Custo:** Tier gratuito muito generoso no AI Studio (`aistudio.google.com`). No modo pago (pay-as-you-go), custa frações de centavos por dia.
-  * **Vantagens:** Janela de contexto massiva (1M+ tokens), processa fotos (prints, notas fiscais, fotos da geladeira), transcreve áudios do WhatsApp nativamente e responde voando.
-* **OpenRouter — *O canivete suíço (com opções 100% gratuitas)*:**
-  * **Custo:** Modelos com a tag `:free` são 0800 (ex: `meta-llama/llama-3.3-70b-instruct:free`, `deepseek/deepseek-r1:free`, `qwen/qwen-2.5-72b-instruct:free`). Para modelos pagos, você carrega R$ 25 a R$ 50 ($5 a $10) via Pix/cartão e roda por meses sem assinatura fixa.
-  * **Vantagens:** Uma única chave de API (`openrouter.ai`) dá acesso a centenas de modelos abertos e proprietários. Excelente para alternar de modelo com um único comando.
-* **Groq & Cerebras — *Velocidade Extrema (Gratuito)*:**
-  * Oferecem planos gratuitos para rodar modelos open-weights (Llama 3.3 70B) com latência praticamente zero.
-* **Anthropic (Claude 3.5 / 3.7 Sonnet) — *Raciocínio Profundo & Código*:**
-  * Referência mundial para programar, refatorar código e seguir instruções complexas. Pago por token consumido.
-* **E modelos 100% locais (Ollama)?**
-  * É possível rodar modelos no próprio Pi ou em outro computador na rede local via Ollama. Porém, no Raspberry Pi (sem GPU dedicada), modelos com inteligência suficiente para usar ferramentas e web search rodam lentos. Para uma experiência rápida e fluida no WhatsApp, usar provedores em nuvem (mesmo os 100% gratuitos via OpenRouter ou AI Studio) é muito superior.
+#### A. WhatsApp (O Mais Prático para o Dia a Dia Familiar)
+* **Precisa de chip físico ou eSIM dedicado? SIM.**
+* **Por que precisa:** O WhatsApp funciona espelhando uma sessão via protocolo Baileys (como se fosse um WhatsApp Web). Toda conta de WhatsApp precisa de um número E.164 verificado inicialmente via código SMS ou ligação. Mesmo que a Meta lance nomes de usuário (*usernames*), a autenticação de base no ecossistema Meta continua atrelada a uma linha telefônica.
+* **Como fazer sem gastar muito:** Compre um chip pré-pago de qualquer operadora (R$ 10 a R$ 15). Coloque o chip em qualquer celular por 5 minutos, ative a conta no WhatsApp, escaneie o QR Code que o OpenClaw exibe no terminal e pronto! O chip nem precisa ficar no aparelho depois disso.
+* **Vantagem:** O assistente tem seu próprio número e foto de perfil, pode participar de grupos da família ou de projetos, transcreve áudios que você grava na rua e responde com notas de voz.
+
+#### B. Telegram (A Opção Instantânea — Não Precisa de Chip!)
+* **Precisa de chip ou número novo? NÃO!**
+* **Como funciona:** Você usa a sua própria conta do Telegram. Abra uma conversa com o perfil oficial **`@BotFather`**, envie o comando `/newbot`, escolha um nome e um apelido (ex: `meu_servidor_bot`). O BotFather vai te devolver um **HTTP API Token**.
+* **Como ativar no OpenClaw:**
+  ```bash
+  openclaw channels add telegram --token "SEU_TOKEN_DO_BOTFATHER"
+  ```
+* **Vantagem:** Custo zero absoluto, configuração em 30 segundos, sem depender de chip telefônico, com suporte completo a textos, fotos, documentos e áudios.
+
+#### C. Discord (Ideal para Comunidades e Equipes)
+* **Precisa de chip? NÃO.**
+* **Como funciona:** Crie uma aplicação no [Discord Developer Portal](https://discord.com/developers/applications), ative as permissões de Bot, copie o Bot Token e convide o bot para o seu servidor privado do Discord.
+* **Vantagem:** Permite organizar canais separados para alertas de servidor, automações e bate-papo.
+
+---
+
+### 🧠 4.2 O "Cérebro" de IA: Como Configurar para Quem Já Paga vs Quem Quer Custo Zero
+
+O Raspberry Pi cuida do armazenamento soberano, dos arquivos e da execução local de comandos, enquanto a inteligência das respostas roda via API. Aqui está o passo a passo exato para cada perfil de usuário:
+
+#### Cenário 1: Quem NÃO quer gastar nada (Custo Zero Absoluto)
+
+* **Opção Campeã: Google AI Studio (Gemini 2.5 / 3.8 Flash)**
+  1. Acesse [aistudio.google.com](https://aistudio.google.com/) e faça login com qualquer conta Google comum;
+  2. Clique no botão azul **"Get API key"** no menu lateral;
+  3. Clique em **"Create API key"** e selecione qualquer projeto padrão;
+  4. Copie a chave gerada (começa com `AIza...`).
+  * **Vantagens:** Não pede cartão de crédito no Free Tier, janela gigante de contexto (1 milhão de tokens), processa fotos, áudios do WhatsApp e responde instantaneamente.
+
+* **Opção Alternativa: OpenRouter (Modelos Abertos Gratuitos)**
+  1. Crie uma conta no [openrouter.ai](https://openrouter.ai/);
+  2. Em *Keys*, gere uma chave de API;
+  3. No OpenClaw, selecione modelos com a terminação `:free` (ex: `meta-llama/llama-3.3-70b-instruct:free` ou `deepseek/deepseek-r1:free`).
+  * **Vantagens:** 100% gratuito e permite testar múltiplos modelos open-weights sem custo.
+
+---
+
+#### Cenário 2: Quem JÁ PAGA assinatura mensal do ChatGPT Plus (OpenAI)
+
+> ⚠️ **Atenção — A Pegadinha Comum:** A assinatura de US$ 20/mês do **ChatGPT Plus** dá direito apenas ao uso na interface web/app do consumidor e **NÃO inclui créditos de API**. A plataforma de desenvolvedores da OpenAI é separada. Mas se você já tem conta, configurar a API é muito barato e rápido:
+
+1. Acesse a plataforma de desenvolvedores: [platform.openai.com](https://platform.openai.com/) e faça login com o mesmo e-mail do seu ChatGPT;
+2. Vá em **Settings ➔ Billing ➔ Add to credit balance**;
+3. Adicione um crédito pré-pago inicial mínimo (ex: **US$ 5 ou US$ 10** via cartão internacional ou contas como Nomad/Wise). 
+   *(Nota: US$ 5 na API com o modelo `gpt-4o-mini` rendem mais de 50.000 mensagens, durando meses no assistente doméstico!)*;
+4. Vá em **API Keys**, clique em **"Create new secret key"** e copie o token (`sk-proj-...`);
+5. No Raspberry Pi, configure a chave:
+   ```bash
+   openclaw configure --provider openai --key "sk-proj-..."
+   ```
+
+---
+
+#### Cenário 3: Quem JÁ PAGA assinatura do Claude Pro (Anthropic)
+
+> ⚠️ Da mesma forma que a OpenAI, a assinatura mensal do **Claude Pro** (web/app) é separada da API da Anthropic (*Console*). 
+
+1. Acesse o console da Anthropic: [console.anthropic.com](https://console.anthropic.com/) e faça login com a sua conta;
+2. Vá em **Plans & Billing** e faça uma recarga inicial pré-paga de **US$ 5**;
+3. No menu **API Keys**, gere uma nova chave (`sk-ant-...`);
+4. No Raspberry Pi, configure a chave:
+   ```bash
+   openclaw configure --provider anthropic --key "sk-ant-..."
+   ```
+* O modelo `claude-3-7-sonnet` ou `claude-3-5-haiku` entregará o raciocínio mais cirúrgico do mercado para comandos de sistema e scripts.
 
 ---
 
