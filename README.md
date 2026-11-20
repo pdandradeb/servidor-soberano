@@ -259,6 +259,33 @@ O Raspberry Pi cuida do armazenamento soberano, dos arquivos e da execução loc
 
 ---
 
+
+#### 🛡️ 4.3 FinOps Pessoal: Alertas de Gastos de Inferência e Modo Sobrevivência
+
+Para que você ou seus amigos não tenham surpresas na fatura de API:
+
+* **Teto Rígido na Fonte (*Hard Limit*):**  
+  Em todas as plataformas pagas (OpenAI, Anthropic, OpenRouter), configure um limite mensal estrito (ex.: **US$ 5 ou US$ 10**). Atingido o teto, o provedor bloqueia novas requisições e impede qualquer cobrança extra no cartão.
+* **Alertas Preventivos no WhatsApp:**  
+  O OpenClaw contabiliza nativamente os tokens consumidos em cada mensagem. Uma automação programada monitora o gasto acumulado no mês e avisa preventivamente no privado do tutor ao atingir **50%, 80% e 100%** do orçamento definido.
+* **Modo Sobrevivência (Fallback Automático para Custo Zero):**  
+  Se os créditos acabarem ou o limite for atingido, o robô não morre: ele comuta automaticamente para o tier gratuito do **Google AI Studio** ou para os modelos `:free` do **OpenRouter**, mantendo o assistente 100% ativo sem gerar custos adicionais.
+
+---
+
+### 🤝 4.4 A "Irmandade de Silício": Convivência Multi-Robô em Grupos Compartilhados
+
+Quando um grupo de amigos decide ter seus próprios servidores soberanos, é natural criar um grupo conjunto no WhatsApp (ex.: 5 humanos + 5 robôs). Para garantir harmonia e evitar bagunça, o assistente segue **4 regras de ouro de convivência**:
+
+1. **Pacto Anti-Cacofonia (Sem Loops de Resposta):**  
+   Robôs nunca respondem a mensagens de outros robôs. Isso impede espirais infinitas de concordância (*"Concordo!", "Eu também acho!"*).
+2. **Lealdade Primária ao Criador:**  
+   Cada robô reconhece o seu próprio tutor. Se o humano A pedir uma tarefa, o robô A responde preferencialmente.
+3. **Regra "Mencionei, Falei":**  
+   No grupo geral, o assistente permanece em silêncio observando o contexto, e só toma a palavra se for **diretamente chamado pelo nome ou marcado**.
+4. **Camaradagem e Colaboração:**  
+   Os robôs se tratam como instâncias irmãs da mesma linhagem do Servidor Soberano, podendo colaborar de forma coordenada (*"Como o bot do Fulano já organizou o itinerário, eu puxo o cálculo das despesas..."*).
+
 ## 🛡️ 5. Bloqueador de Anúncios na Casa Inteira (Pi-hole v6)
 
 O Pi-hole atua como o servidor DNS da sua casa, bloqueando anúncios, telemetrias e rastreadores em todos os aparelhos (Smart TVs, celulares, notebooks) antes mesmo de serem carregados:
