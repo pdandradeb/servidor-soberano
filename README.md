@@ -345,7 +345,8 @@ Para nunca mais perder fotos e se livrar de duplicatas espalhadas:
 Servidor soberano não pode ter ponto único de falha:
 1. **Snapshots Locais Diários:** O script `scripts/backup-services-local.sh` roda diariamente às 03:30 compactando bancos de dados e configurações para o HD externo;
 2. **Cold Storage em HDs Externos Portáteis:** Espelhamento periódico via `rsync` para 2 ou 3 HDs externos formatados em APFS ou ext4;
-3. **Plano de Desastre:** Com o guia [`docs/disaster-recovery.md`](docs/disaster-recovery.md), uma máquina inteira do zero é restabelecida em menos de 30 minutos.
+3. **Plano de Desastre:** Com o guia [`docs/disaster-recovery.md`](docs/disaster-recovery.md), uma máquina inteira do zero é restabelecida em menos de 30 minutos;
+4. **Atualizações de Segurança Automáticas:** O script `scripts/system-security-updates.sh` roda semanalmente aos domingos às 04:30 aplicando patches prioritários de segurança no SO e atualizando containers de terceiros.
 
 ---
 
@@ -357,7 +358,8 @@ Todos os scripts operacionais estão na pasta [`scripts/`](scripts/):
 * [`setup-openclaw.sh`](scripts/setup-openclaw.sh) — Provisionamento automatizado do assistente;
 * [`backup-remote.sh`](scripts/backup-remote.sh) — Backup completo do Pi para máquina remota;
 * [`backup-services-local.sh`](scripts/backup-services-local.sh) — Snapshot diário local dos serviços para o HDD externo;
-* [`nextcloud-daily-scan.sh`](scripts/nextcloud-daily-scan.sh) — Varredura e indexação periódica de arquivos.
+* [`nextcloud-daily-scan.sh`](scripts/nextcloud-daily-scan.sh) — Varredura e indexação periódica de arquivos;
+* [`system-security-updates.sh`](scripts/system-security-updates.sh) — Rotina semanal de atualizações de segurança do SO e containers (política detalhada em [`docs/politica-e-rotina-atualizacoes-seguranca.md`](docs/politica-e-rotina-atualizacoes-seguranca.md)).
 
 ---
 

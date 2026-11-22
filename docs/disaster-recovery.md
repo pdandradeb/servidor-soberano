@@ -179,6 +179,9 @@ Restabelecer os agendamentos no `crontab -e` do usuário `raspd`:
 
 # Sincronização diária do Nextcloud com o Acervo às 04:00
 0 4 * * * /home/raspd/dev/raspd/scripts/nextcloud-daily-scan.sh
+
+# Atualizações automáticas de segurança do SO e containers (semanal aos domingos às 04:30)
+30 4 * * 0 /home/raspd/dev/raspd/scripts/system-security-updates.sh >> /home/raspd/dev/raspd/logs/security-updates.log 2>&1
 ```
 
 ---
